@@ -1,5 +1,4 @@
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -129,8 +128,13 @@ public class Main {
 			
 			System.out.println("Saving 12-bit color image at \"out.png\"...");
 			BufferedImage imageOut = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-			WritableRaster raster = imageOut.getRaster();
-			raster.setSamples(0, 0, width, height, 0, pixelsOut);
+			
+			for (int y = 0; y < height; y++) {
+				for (int x = 0; x < width; x++) {
+					imageOut.setRGB(x, y, pixelsOut[x + y * width]);
+				}
+			}
+			
 			ImageIO.write(imageOut, "png", new File("out.png"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -173,6 +177,8 @@ public class Main {
 				red >>= 4;
 				
 				pixelsOut[i] = (blue << 4) | (green << 12) | (red << 20);
+				pixelsOut[i] = (red << 20) | (green << 12) | (blue << 4);
+				
 				this.fileOut += Integer.toHexString(green) + Integer.toHexString(blue) + Integer.toHexString(red) + "\n";
 			}
 			latch.countDown();
