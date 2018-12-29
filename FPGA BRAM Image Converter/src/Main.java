@@ -23,6 +23,8 @@ public class Main {
 	private static int threads = 4;
 	
 	public static void main(String[] args) {
+		
+		boolean threadsSpecified = false;
 		for (int i = 0; i < args.length; i++) {
 			if (outputPath == null) {
 				if (new File(args[i]).exists() && inputPath == null) {
@@ -44,12 +46,13 @@ public class Main {
 							System.exit(0);
 						}
 					}
-				} else if (!(new File(args[i]).exists())) {
+				} else if (!(new File(args[i]).exists()) && !threadsSpecified && !args[i].equals("-t")) {
 					System.err.println("Error at \"" + args[i] + "\"");
 					System.exit(0);
 				}
 			}
 			if (args[i].equals("-t")) {
+				threadsSpecified = true;
 				if (i + 1 < args.length) {
 					try {
 						threads = Integer.parseInt(args[i+1]);
